@@ -74,6 +74,42 @@ if (!defined('ABSPATH')) {
                             </td>
                         </tr>
                     </table>
+
+                    <h3><?php _e('Weekend Hours', 'holiday-hours'); ?></h3>
+                    <p class="description"><?php _e('Configure whether your business is closed on weekends. If checked, the business will show as closed on these days.', 'holiday-hours'); ?></p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="saturday_closed"><?php _e('Saturday', 'holiday-hours'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           id="saturday_closed"
+                                           name="saturday_closed"
+                                           value="1"
+                                           <?php checked(get_option('holiday_hours_saturday_closed', false), true); ?>>
+                                    <?php _e('Closed on Saturdays', 'holiday-hours'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="sunday_closed"><?php _e('Sunday', 'holiday-hours'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           id="sunday_closed"
+                                           name="sunday_closed"
+                                           value="1"
+                                           <?php checked(get_option('holiday_hours_sunday_closed', false), true); ?>>
+                                    <?php _e('Closed on Sundays', 'holiday-hours'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
                 <!-- Test Date Section -->

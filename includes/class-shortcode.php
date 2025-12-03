@@ -65,6 +65,18 @@ class Holiday_Hours_Shortcode {
             }
         }
 
+        // Check if it's a weekend day that should be closed
+        $day_of_week = date('w', strtotime($date)); // 0 = Sunday, 6 = Saturday
+        $saturday_closed = get_option('holiday_hours_saturday_closed', false);
+        $sunday_closed = get_option('holiday_hours_sunday_closed', false);
+
+        if (($day_of_week == 6 && $saturday_closed) || ($day_of_week == 0 && $sunday_closed)) {
+            return array(
+                'status' => 'closed',
+                'custom_text' => 'Closed'
+            );
+        }
+
         // Return default hours
         return array(
             'status' => 'open',

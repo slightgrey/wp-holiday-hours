@@ -92,6 +92,18 @@ class Holiday_Hours_Admin {
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false
         ));
+
+        register_setting('holiday_hours_settings', 'holiday_hours_saturday_closed', array(
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => false
+        ));
+
+        register_setting('holiday_hours_settings', 'holiday_hours_sunday_closed', array(
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => false
+        ));
     }
 
     /**
@@ -160,12 +172,16 @@ class Holiday_Hours_Admin {
         $default_close = isset($_POST['default_close']) ? sanitize_text_field($_POST['default_close']) : '7:00 PM';
         $enable_test_date = isset($_POST['enable_test_date']) ? true : false;
         $delete_on_uninstall = isset($_POST['delete_on_uninstall']) ? true : false;
+        $saturday_closed = isset($_POST['saturday_closed']) ? true : false;
+        $sunday_closed = isset($_POST['sunday_closed']) ? true : false;
 
         // Save default hours
         update_option('holiday_hours_default_open', $default_open);
         update_option('holiday_hours_default_close', $default_close);
         update_option('holiday_hours_enable_test_date', $enable_test_date);
         update_option('holiday_hours_delete_on_uninstall', $delete_on_uninstall);
+        update_option('holiday_hours_saturday_closed', $saturday_closed);
+        update_option('holiday_hours_sunday_closed', $sunday_closed);
 
         echo '<div class="notice notice-success is-dismissible"><p>' .
              __('Settings saved successfully!', 'holiday-hours') .
