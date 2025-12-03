@@ -157,6 +157,12 @@
                 return;
             }
 
+            // Validate date range
+            if (dateTo && dateFrom && dateTo < dateFrom) {
+                alert('The "To" date cannot be earlier than the "From" date.');
+                return;
+            }
+
             if (status === 'open' && (!openTime || !closeTime)) {
                 alert('Please fill in both open and close times.');
                 return;
