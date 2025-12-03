@@ -212,6 +212,14 @@
          * Open modal
          */
         function openModal(holiday = null) {
+            // Set date range limits to current selected year
+            if (typeof currentYear !== 'undefined') {
+                const minDate = currentYear + '-01-01';
+                const maxDate = currentYear + '-12-31';
+                $('#modal-date-from').attr('min', minDate).attr('max', maxDate);
+                $('#modal-date-to').attr('min', minDate).attr('max', maxDate);
+            }
+
             if (holiday) {
                 // Edit mode
                 editingId = holiday.id;

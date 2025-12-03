@@ -179,7 +179,7 @@ class Holiday_Hours_Database {
         return $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$this->table_name}
             WHERE date_from <= %s
-            AND (date_to IS NULL OR date_to >= %s OR (date_to IS NULL AND date_from = %s))
+            AND (date_to >= %s OR (date_to IS NULL AND date_from = %s))
             ORDER BY date_from ASC
             LIMIT 1",
             $date,

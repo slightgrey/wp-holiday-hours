@@ -261,4 +261,5 @@ if (!defined('ABSPATH')) {
 <script>
 // Store holiday data in JavaScript
 var holidayData = <?php echo json_encode($holiday_data); ?>;
+var currentYear = <?php echo json_encode($current_year); ?>;
 </script>
