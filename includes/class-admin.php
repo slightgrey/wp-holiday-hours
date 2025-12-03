@@ -86,6 +86,12 @@ class Holiday_Hours_Admin {
             'sanitize_callback' => 'sanitize_text_field',
             'default' => ''
         ));
+
+        register_setting('holiday_hours_settings', 'holiday_hours_delete_on_uninstall', array(
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => false
+        ));
     }
 
     /**
@@ -153,11 +159,13 @@ class Holiday_Hours_Admin {
         $default_open = isset($_POST['default_open']) ? sanitize_text_field($_POST['default_open']) : '6:00 AM';
         $default_close = isset($_POST['default_close']) ? sanitize_text_field($_POST['default_close']) : '7:00 PM';
         $enable_test_date = isset($_POST['enable_test_date']) ? true : false;
+        $delete_on_uninstall = isset($_POST['delete_on_uninstall']) ? true : false;
 
         // Save default hours
         update_option('holiday_hours_default_open', $default_open);
         update_option('holiday_hours_default_close', $default_close);
         update_option('holiday_hours_enable_test_date', $enable_test_date);
+        update_option('holiday_hours_delete_on_uninstall', $delete_on_uninstall);
 
         echo '<div class="notice notice-success is-dismissible"><p>' .
              __('Settings saved successfully!', 'holiday-hours') .
@@ -279,7 +287,9 @@ class Holiday_Hours_Admin {
         // Handle form submission
         if (isset($_POST['holiday_hours_test_date_save']) && check_admin_referer('holiday_hours_test_date_action', 'holiday_hours_test_date_nonce')) {
             $test_date = isset($_POST['test_date']) ? sanitize_text_field($_POST['test_date']) : '';
+
             update_option('holiday_hours_test_date', $test_date);
+
             echo '<div class="notice notice-success is-dismissible"><p>' . __('Test date saved successfully!', 'holiday-hours') . '</p></div>';
         }
 

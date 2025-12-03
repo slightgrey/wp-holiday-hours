@@ -101,6 +101,31 @@ if (!defined('ABSPATH')) {
                     </table>
                 </div>
 
+                <!-- Delete Data on Uninstall Section -->
+                <div class="card">
+                    <h2><?php _e('Uninstall Options', 'holiday-hours'); ?></h2>
+                    <p class="description"><?php _e('Configure what happens when you uninstall this plugin.', 'holiday-hours'); ?></p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="delete_on_uninstall"><?php _e('Delete Data on Uninstall', 'holiday-hours'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           id="delete_on_uninstall"
+                                           name="delete_on_uninstall"
+                                           value="1"
+                                           <?php checked(get_option('holiday_hours_delete_on_uninstall', false), true); ?>>
+                                    <?php _e('Delete all plugin data when the plugin is uninstalled', 'holiday-hours'); ?>
+                                </label>
+                                <p class="description"><?php _e('When enabled, all holiday schedules, settings, and database tables will be permanently deleted when you uninstall this plugin. This action cannot be undone.', 'holiday-hours'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
                 <!-- Shortcode Information -->
                 <div class="card">
                     <h2><?php _e('How to Use', 'holiday-hours'); ?></h2>
