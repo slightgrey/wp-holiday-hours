@@ -186,11 +186,11 @@
                     nonce: holidayHoursAjax.nonce,
                     id: editingId || 0,
                     date_from: dateFrom,
-                    date_to: dateTo,
+                    date_to: dateTo || '',
                     status: status,
-                    open_time: openTime,
-                    close_time: closeTime,
-                    custom_text: customText
+                    open_time: openTime || '',
+                    close_time: closeTime || '',
+                    custom_text: customText || ''
                 },
                 success: function(response) {
                     if (response.success) {

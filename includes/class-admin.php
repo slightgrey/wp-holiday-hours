@@ -176,11 +176,11 @@ class Holiday_Hours_Admin {
 
         $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
         $date_from = isset($_POST['date_from']) ? sanitize_text_field($_POST['date_from']) : '';
-        $date_to = isset($_POST['date_to']) ? sanitize_text_field($_POST['date_to']) : null;
+        $date_to = isset($_POST['date_to']) && !empty($_POST['date_to']) ? sanitize_text_field($_POST['date_to']) : null;
         $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'open';
-        $open_time = isset($_POST['open_time']) ? sanitize_text_field($_POST['open_time']) : null;
-        $close_time = isset($_POST['close_time']) ? sanitize_text_field($_POST['close_time']) : null;
-        $custom_text = isset($_POST['custom_text']) ? sanitize_text_field($_POST['custom_text']) : null;
+        $open_time = isset($_POST['open_time']) && !empty($_POST['open_time']) ? sanitize_text_field($_POST['open_time']) : null;
+        $close_time = isset($_POST['close_time']) && !empty($_POST['close_time']) ? sanitize_text_field($_POST['close_time']) : null;
+        $custom_text = isset($_POST['custom_text']) && !empty($_POST['custom_text']) ? sanitize_text_field($_POST['custom_text']) : null;
 
         if (empty($date_from)) {
             wp_send_json_error(array('message' => __('Date is required', 'holiday-hours')));
