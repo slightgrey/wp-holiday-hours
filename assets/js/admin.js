@@ -11,6 +11,49 @@
         let editingId = null;
 
         /**
+         * Add next year
+         */
+        $('#add-next-year-btn').on('click', function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+
+            // Find the maximum year from the dropdown
+            let maxYear = new Date().getFullYear();
+            $('#year-select option').each(function() {
+                const year = parseInt($(this).val());
+                if (year > maxYear) {
+                    maxYear = year;
+                }
+            });
+
+            const nextYear = maxYear + 1;
+
+            $btn.prop('disabled', true).text('Adding...');
+
+            $.ajax({
+                url: holidayHoursAjax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'holiday_hours_add_year',
+                    nonce: holidayHoursAjax.nonce,
+                    year: nextYear
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.data.redirect_url;
+                    } else {
+                        alert(response.data.message || 'Failed to add year.');
+                        $btn.prop('disabled', false).text('+ Add Next Year');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while adding year.');
+                    $btn.prop('disabled', false).text('+ Add Next Year');
+                }
+            });
+        });
+
+        /**
          * Open modal for adding new holiday
          */
         $('#add-holiday-btn').on('click', function(e) {

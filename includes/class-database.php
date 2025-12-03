@@ -151,13 +151,23 @@ class Holiday_Hours_Database {
     public function get_available_years() {
         global $wpdb;
 
+        // Get years from database
         $years = $wpdb->get_col("SELECT DISTINCT YEAR(date_from) FROM {$this->table_name} ORDER BY YEAR(date_from) DESC");
 
-        if (empty($years)) {
+        // Get manually added years
+        $added_years = get_option('holiday_hours_added_years', array());
+
+        // Merge and deduplicate
+        $all_years = array_unique(array_merge($years, $added_years));
+
+        // Sort descending
+        rsort($all_years);
+
+        if (empty($all_years)) {
             return array(date('Y'));
         }
 
-        return $years;
+        return $all_years;
     }
 
     /**

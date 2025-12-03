@@ -29,6 +29,7 @@ class Holiday_Hours_Admin {
         // AJAX handlers
         add_action('wp_ajax_holiday_hours_save', array($this, 'ajax_save_holiday'));
         add_action('wp_ajax_holiday_hours_delete', array($this, 'ajax_delete_holiday'));
+        add_action('wp_ajax_holiday_hours_add_year', array($this, 'ajax_add_year'));
     }
 
     /**
@@ -241,5 +242,33 @@ class Holiday_Hours_Admin {
         } else {
             wp_send_json_error(array('message' => __('Failed to delete holiday schedule', 'holiday-hours')));
         }
+    }
+
+    /**
+     * AJAX handler for adding a new year
+     */
+    public function ajax_add_year() {
+        check_ajax_referer('holiday_hours_ajax_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => __('Unauthorized', 'holiday-hours')));
+        }
+
+        $year = isset($_POST['year']) ? intval($_POST['year']) : 0;
+
+        if ($year <= 0) {
+            wp_send_json_error(array('message' => __('Invalid year', 'holiday-hours')));
+        }
+
+        // Store the year in an option so it shows in the dropdown
+        $added_years = get_option('holiday_hours_added_years', array());
+        if (!in_array($year, $added_years)) {
+            $added_years[] = $year;
+            update_option('holiday_hours_added_years', $added_years);
+        }
+
+        wp_send_json_success(array(
+            'redirect_url' => admin_url('admin.php?page=holiday-hours&year=' . $year)
+        ));
     }
 }

@@ -26,10 +26,9 @@ if (!defined('ABSPATH')) {
                 </option>
             <?php endif; ?>
         </select>
-        <button type="button" class="button" onclick="window.location.href='<?php echo admin_url('admin.php?page=holiday-hours&year=' . (date('Y') + 1)); ?>';">
+        <button type="button" class="button" id="add-next-year-btn">
             <?php _e('+ Add Next Year', 'holiday-hours'); ?>
         </button>
-    </form>
 
     <!-- Two Column Layout -->
     <div class="holiday-hours-layout">
