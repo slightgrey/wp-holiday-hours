@@ -30,7 +30,18 @@ class Holiday_Hours_Shortcode {
      */
     public function get_current_hours($date = null) {
         if ($date === null) {
-            $date = current_time('Y-m-d');
+            // Check if test date mode is enabled
+            $enable_test_date = get_option('holiday_hours_enable_test_date', false);
+            if ($enable_test_date) {
+                $test_date = get_option('holiday_hours_test_date', '');
+                if (!empty($test_date)) {
+                    $date = $test_date;
+                } else {
+                    $date = current_time('Y-m-d');
+                }
+            } else {
+                $date = current_time('Y-m-d');
+            }
         }
 
         $default_open = get_option('holiday_hours_default_open', '6:00 AM');
@@ -43,7 +54,7 @@ class Holiday_Hours_Shortcode {
             if ($holiday['status'] === 'closed') {
                 return array(
                     'status' => 'closed',
-                    'text' => !empty($holiday['custom_text']) ? $holiday['custom_text'] : 'Closed'
+                    'custom_text' => !empty($holiday['custom_text']) ? $holiday['custom_text'] : 'Closed'
                 );
             } else {
                 return array(
@@ -67,7 +78,7 @@ class Holiday_Hours_Shortcode {
      */
     public function render_shortcode($atts) {
         $atts = shortcode_atts(array(
-            'date' => current_time('Y-m-d'),
+            'date' => null,
             'format' => 'default'
         ), $atts);
 
@@ -77,7 +88,7 @@ class Holiday_Hours_Shortcode {
 
         if ($hours['status'] === 'closed') {
             echo '<div class="holiday-hours closed">';
-            echo '<span class="status">' . esc_html($hours['text']) . '</span>';
+            echo '<span class="status">' . esc_html($hours['custom_text']) . '</span>';
             echo '</div>';
         } else {
             echo '<div class="holiday-hours open">';

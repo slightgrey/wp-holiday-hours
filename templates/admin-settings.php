@@ -76,6 +76,31 @@ if (!defined('ABSPATH')) {
                     </table>
                 </div>
 
+                <!-- Test Date Section -->
+                <div class="card">
+                    <h2><?php _e('Test Date Mode', 'holiday-hours'); ?></h2>
+                    <p class="description"><?php _e('Enable this setting to test the plugin with different dates. A "Test Date" submenu will appear where you can set a simulated date.', 'holiday-hours'); ?></p>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="enable_test_date"><?php _e('Enable Test Date', 'holiday-hours'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="checkbox"
+                                           id="enable_test_date"
+                                           name="enable_test_date"
+                                           value="1"
+                                           <?php checked(get_option('holiday_hours_enable_test_date', false), true); ?>>
+                                    <?php _e('Enable test date mode to simulate different dates on your site', 'holiday-hours'); ?>
+                                </label>
+                                <p class="description"><?php _e('When enabled, the plugin will use the test date instead of the current date. This allows you to preview how holiday schedules will display on specific dates.', 'holiday-hours'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
                 <!-- Shortcode Information -->
                 <div class="card">
                     <h2><?php _e('How to Use', 'holiday-hours'); ?></h2>

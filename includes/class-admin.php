@@ -45,6 +45,18 @@ class Holiday_Hours_Admin {
             'dashicons-clock',
             30
         );
+
+        // Add submenu for test date (only shown when test date is enabled)
+        if (get_option('holiday_hours_enable_test_date', false)) {
+            add_submenu_page(
+                'holiday-hours',
+                __('Test Date', 'holiday-hours'),
+                __('Test Date', 'holiday-hours'),
+                'manage_options',
+                'holiday-hours-test-date',
+                array($this, 'render_test_date_page')
+            );
+        }
     }
 
     /**
@@ -61,6 +73,18 @@ class Holiday_Hours_Admin {
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => '7:00 PM'
+        ));
+
+        register_setting('holiday_hours_settings', 'holiday_hours_enable_test_date', array(
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => false
+        ));
+
+        register_setting('holiday_hours_settings', 'holiday_hours_test_date', array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => ''
         ));
     }
 
@@ -128,43 +152,15 @@ class Holiday_Hours_Admin {
     private function save_settings($selected_year) {
         $default_open = isset($_POST['default_open']) ? sanitize_text_field($_POST['default_open']) : '6:00 AM';
         $default_close = isset($_POST['default_close']) ? sanitize_text_field($_POST['default_close']) : '7:00 PM';
+        $enable_test_date = isset($_POST['enable_test_date']) ? true : false;
 
         // Save default hours
         update_option('holiday_hours_default_open', $default_open);
         update_option('holiday_hours_default_close', $default_close);
-
-        // Delete existing schedules for this year
-        $this->database->delete_schedules_by_year($selected_year);
-
-        // Get holiday data from JSON field
-        $holiday_json = isset($_POST['holiday_hours_json']) ? $_POST['holiday_hours_json'] : '';
-        $holiday_data = json_decode(stripslashes($holiday_json), true);
-
-        // Save new schedules
-        $saved_count = 0;
-        if (!empty($holiday_data) && is_array($holiday_data)) {
-            foreach ($holiday_data as $holiday) {
-                if (empty($holiday['date_from'])) {
-                    continue;
-                }
-
-                $result = $this->database->insert_schedule(
-                    sanitize_text_field($holiday['date_from']),
-                    !empty($holiday['date_to']) ? sanitize_text_field($holiday['date_to']) : null,
-                    sanitize_text_field($holiday['status']),
-                    !empty($holiday['open_time']) ? sanitize_text_field($holiday['open_time']) : null,
-                    !empty($holiday['close_time']) ? sanitize_text_field($holiday['close_time']) : null,
-                    !empty($holiday['custom_text']) ? sanitize_text_field($holiday['custom_text']) : null
-                );
-
-                if ($result !== false) {
-                    $saved_count++;
-                }
-            }
-        }
+        update_option('holiday_hours_enable_test_date', $enable_test_date);
 
         echo '<div class="notice notice-success is-dismissible"><p>' .
-             sprintf(__('Settings saved successfully! %d holiday schedule(s) saved.', 'holiday-hours'), $saved_count) .
+             __('Settings saved successfully!', 'holiday-hours') .
              '</p></div>';
     }
 
@@ -270,5 +266,25 @@ class Holiday_Hours_Admin {
         wp_send_json_success(array(
             'redirect_url' => admin_url('admin.php?page=holiday-hours&year=' . $year)
         ));
+    }
+
+    /**
+     * Render test date page
+     */
+    public function render_test_date_page() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        // Handle form submission
+        if (isset($_POST['holiday_hours_test_date_save']) && check_admin_referer('holiday_hours_test_date_action', 'holiday_hours_test_date_nonce')) {
+            $test_date = isset($_POST['test_date']) ? sanitize_text_field($_POST['test_date']) : '';
+            update_option('holiday_hours_test_date', $test_date);
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Test date saved successfully!', 'holiday-hours') . '</p></div>';
+        }
+
+        $test_date = get_option('holiday_hours_test_date', date('Y-m-d'));
+
+        include HOLIDAY_HOURS_PLUGIN_DIR . 'templates/admin-test-date.php';
     }
 }
