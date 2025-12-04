@@ -217,6 +217,36 @@ if (!defined('ABSPATH')) {
                                             <strong><?php _e('Open:', 'holiday-hours'); ?></strong> <?php echo esc_html($holiday['open_time'] . ' - ' . $holiday['close_time']); ?>
                                         <?php endif; ?>
                                     </div>
+                                    <?php
+                                    // Check for overrides
+                                    $overrides = $this->database->get_override_info(
+                                        $holiday['id'],
+                                        $holiday['date_from'],
+                                        $holiday['date_to']
+                                    );
+                                    if (!empty($overrides)):
+                                    ?>
+                                        <div class="holiday-item-override-notice">
+                                            <span class="dashicons dashicons-info"></span>
+                                            <span>
+                                                <?php
+                                                $override_dates = array();
+                                                foreach ($overrides as $override) {
+                                                    $override_dates[] = date('M j', strtotime($override['date_from']));
+                                                }
+                                                printf(
+                                                    _n(
+                                                        'Overridden on %s',
+                                                        'Overridden on %s',
+                                                        count($overrides),
+                                                        'holiday-hours'
+                                                    ),
+                                                    implode(', ', $override_dates)
+                                                );
+                                                ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="holiday-item-actions">
                                     <button type="button" class="button edit-holiday-btn" data-holiday-id="<?php echo esc_attr($holiday['id']); ?>">

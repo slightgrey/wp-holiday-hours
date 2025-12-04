@@ -197,4 +197,31 @@ class Holiday_Hours_Database {
             $date
         ), ARRAY_A);
     }
+
+    /**
+     * Check if a date is being overridden by other schedules
+     * Returns the overriding schedule if found, or false otherwise
+     */
+    public function get_override_info($schedule_id, $date_from, $date_to) {
+        global $wpdb;
+
+        // If this is a date range, check if any single-day entries fall within it
+        if (!empty($date_to) && $date_to !== $date_from) {
+            $overrides = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$this->table_name}
+                WHERE id != %d
+                AND date_from >= %s
+                AND date_from <= %s
+                AND (date_to IS NULL OR date_to = date_from)
+                ORDER BY date_from ASC",
+                $schedule_id,
+                $date_from,
+                $date_to
+            ), ARRAY_A);
+
+            return $overrides;
+        }
+
+        return array();
+    }
 }
