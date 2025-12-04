@@ -65,40 +65,6 @@ class Holiday_Hours_Database {
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-
-        $this->migrate_old_data();
-    }
-
-    /**
-     * Migrate data from wp_options to database
-     */
-    private function migrate_old_data() {
-        global $wpdb;
-
-        if (get_option('holiday_hours_migrated', false)) {
-            return;
-        }
-
-        $old_data = get_option('holiday_hours_data', array());
-
-        if (!empty($old_data) && is_array($old_data)) {
-            foreach ($old_data as $holiday) {
-                if (empty($holiday['date_from'])) {
-                    continue;
-                }
-
-                $this->insert_schedule(
-                    $holiday['date_from'],
-                    !empty($holiday['date_to']) ? $holiday['date_to'] : null,
-                    isset($holiday['status']) ? $holiday['status'] : 'open',
-                    isset($holiday['open_time']) ? $holiday['open_time'] : null,
-                    isset($holiday['close_time']) ? $holiday['close_time'] : null,
-                    isset($holiday['custom_text']) ? $holiday['custom_text'] : null
-                );
-            }
-        }
-
-        update_option('holiday_hours_migrated', true);
     }
 
     /**

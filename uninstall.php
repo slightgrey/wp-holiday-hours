@@ -30,8 +30,8 @@ if ($delete_on_uninstall) {
     delete_option('holiday_hours_test_date');
     delete_option('holiday_hours_delete_on_uninstall');
     delete_option('holiday_hours_added_years');
-    delete_option('holiday_hours_migrated');
-    delete_option('holiday_hours_data'); // Legacy option
+    delete_option('holiday_hours_saturday_closed');
+    delete_option('holiday_hours_sunday_closed');
 
     // For multisite installations, delete options from all sites
     if (is_multisite()) {
@@ -48,8 +48,8 @@ if ($delete_on_uninstall) {
             delete_option('holiday_hours_test_date');
             delete_option('holiday_hours_delete_on_uninstall');
             delete_option('holiday_hours_added_years');
-            delete_option('holiday_hours_migrated');
-            delete_option('holiday_hours_data');
+            delete_option('holiday_hours_saturday_closed');
+            delete_option('holiday_hours_sunday_closed');
 
             restore_current_blog();
         }
