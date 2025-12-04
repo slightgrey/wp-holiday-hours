@@ -27,6 +27,11 @@ class Holiday_Hours_Shortcode {
 
     /**
      * Get current hours for a date
+     * Priority order:
+     * 1. Single-day custom entries (can override anything including weekends)
+     * 2. Weekend closed settings (overrides date ranges)
+     * 3. Date ranges with custom hours
+     * 4. Default hours
      */
     public function get_current_hours($date = null) {
         if ($date === null) {
@@ -50,13 +55,31 @@ class Holiday_Hours_Shortcode {
         // Check if current date falls within any holiday range
         $holiday = $this->database->get_schedule_for_date($date);
 
+        // Check if it's a weekend day
+        $day_of_week = date('w', strtotime($date)); // 0 = Sunday, 6 = Saturday
+        $saturday_closed = get_option('holiday_hours_saturday_closed', false);
+        $sunday_closed = get_option('holiday_hours_sunday_closed', false);
+        $is_closed_weekend = ($day_of_week == 6 && $saturday_closed) || ($day_of_week == 0 && $sunday_closed);
+
         if ($holiday) {
+            // Check if this is a single-day entry (highest priority)
+            $is_single_day = ($holiday['date_to'] === null && $holiday['date_from'] === $date);
+
             if ($holiday['status'] === 'closed') {
                 return array(
                     'status' => 'closed',
                     'custom_text' => !empty($holiday['custom_text']) ? $holiday['custom_text'] : 'Closed'
                 );
             } else {
+                // If it's a date range (not single day) and it's a weekend that should be closed,
+                // weekend setting takes priority
+                if (!$is_single_day && $is_closed_weekend) {
+                    return array(
+                        'status' => 'closed',
+                        'custom_text' => 'Closed'
+                    );
+                }
+
                 return array(
                     'status' => 'open',
                     'open_time' => $holiday['open_time'],
@@ -66,11 +89,7 @@ class Holiday_Hours_Shortcode {
         }
 
         // Check if it's a weekend day that should be closed
-        $day_of_week = date('w', strtotime($date)); // 0 = Sunday, 6 = Saturday
-        $saturday_closed = get_option('holiday_hours_saturday_closed', false);
-        $sunday_closed = get_option('holiday_hours_sunday_closed', false);
-
-        if (($day_of_week == 6 && $saturday_closed) || ($day_of_week == 0 && $sunday_closed)) {
+        if ($is_closed_weekend) {
             return array(
                 'status' => 'closed',
                 'custom_text' => 'Closed'

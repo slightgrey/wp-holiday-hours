@@ -172,6 +172,9 @@ class Holiday_Hours_Database {
 
     /**
      * Get schedule for a specific date
+     * Priority order:
+     * 1. Single-day entries (date_to IS NULL AND date_from = target_date)
+     * 2. Date ranges (sorted by narrowest range first)
      */
     public function get_schedule_for_date($date) {
         global $wpdb;
@@ -180,8 +183,15 @@ class Holiday_Hours_Database {
             "SELECT * FROM {$this->table_name}
             WHERE date_from <= %s
             AND (date_to >= %s OR (date_to IS NULL AND date_from = %s))
-            ORDER BY date_from ASC
+            ORDER BY
+                CASE
+                    WHEN date_to IS NULL AND date_from = %s THEN 0
+                    ELSE 1
+                END,
+                COALESCE(DATEDIFF(date_to, date_from), 0) ASC,
+                date_from DESC
             LIMIT 1",
+            $date,
             $date,
             $date,
             $date
