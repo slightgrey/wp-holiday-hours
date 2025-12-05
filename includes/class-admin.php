@@ -63,17 +63,34 @@ class Holiday_Hours_Admin {
      * Register settings
      */
     public function register_settings() {
-        register_setting('holiday_hours_settings', 'holiday_hours_default_open', array(
-            'type' => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default' => '6:00 AM'
-        ));
+        // Register day-specific settings for Monday through Sunday
+        $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
 
-        register_setting('holiday_hours_settings', 'holiday_hours_default_close', array(
-            'type' => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default' => '7:00 PM'
-        ));
+        foreach ($days as $day) {
+            register_setting('holiday_hours_settings', 'holiday_hours_' . $day . '_open', array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => '6:00 AM'
+            ));
+
+            register_setting('holiday_hours_settings', 'holiday_hours_' . $day . '_close', array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => '7:00 PM'
+            ));
+
+            register_setting('holiday_hours_settings', 'holiday_hours_' . $day . '_closed', array(
+                'type' => 'boolean',
+                'sanitize_callback' => 'rest_sanitize_boolean',
+                'default' => false
+            ));
+
+            register_setting('holiday_hours_settings', 'holiday_hours_' . $day . '_custom_text', array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => ''
+            ));
+        }
 
         register_setting('holiday_hours_settings', 'holiday_hours_enable_test_date', array(
             'type' => 'boolean',
@@ -88,18 +105,6 @@ class Holiday_Hours_Admin {
         ));
 
         register_setting('holiday_hours_settings', 'holiday_hours_delete_on_uninstall', array(
-            'type' => 'boolean',
-            'sanitize_callback' => 'rest_sanitize_boolean',
-            'default' => false
-        ));
-
-        register_setting('holiday_hours_settings', 'holiday_hours_saturday_closed', array(
-            'type' => 'boolean',
-            'sanitize_callback' => 'rest_sanitize_boolean',
-            'default' => false
-        ));
-
-        register_setting('holiday_hours_settings', 'holiday_hours_sunday_closed', array(
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false
@@ -157,9 +162,19 @@ class Holiday_Hours_Admin {
         // Get data for display
         $holiday_data = $this->database->get_schedules_by_year($selected_year);
         $available_years = $this->database->get_available_years();
-        $default_open = get_option('holiday_hours_default_open', '6:00 AM');
-        $default_close = get_option('holiday_hours_default_close', '7:00 PM');
         $current_year = $selected_year;
+
+        // Get day-specific settings
+        $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+        $day_settings = array();
+        foreach ($days as $day) {
+            $day_settings[$day] = array(
+                'open' => get_option('holiday_hours_' . $day . '_open', '6:00 AM'),
+                'close' => get_option('holiday_hours_' . $day . '_close', '7:00 PM'),
+                'closed' => get_option('holiday_hours_' . $day . '_closed', false),
+                'custom_text' => get_option('holiday_hours_' . $day . '_custom_text', '')
+            );
+        }
 
         include HOLIDAY_HOURS_PLUGIN_DIR . 'templates/admin-settings.php';
     }
@@ -168,20 +183,25 @@ class Holiday_Hours_Admin {
      * Save settings
      */
     private function save_settings($selected_year) {
-        $default_open = isset($_POST['default_open']) ? sanitize_text_field($_POST['default_open']) : '6:00 AM';
-        $default_close = isset($_POST['default_close']) ? sanitize_text_field($_POST['default_close']) : '7:00 PM';
         $enable_test_date = isset($_POST['enable_test_date']) ? true : false;
         $delete_on_uninstall = isset($_POST['delete_on_uninstall']) ? true : false;
-        $saturday_closed = isset($_POST['saturday_closed']) ? true : false;
-        $sunday_closed = isset($_POST['sunday_closed']) ? true : false;
 
-        // Save default hours
-        update_option('holiday_hours_default_open', $default_open);
-        update_option('holiday_hours_default_close', $default_close);
+        // Save day-specific settings
+        $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+        foreach ($days as $day) {
+            $open_time = isset($_POST[$day . '_open']) ? sanitize_text_field($_POST[$day . '_open']) : '6:00 AM';
+            $close_time = isset($_POST[$day . '_close']) ? sanitize_text_field($_POST[$day . '_close']) : '7:00 PM';
+            $is_closed = isset($_POST[$day . '_closed']) ? true : false;
+            $custom_text = isset($_POST[$day . '_custom_text']) ? sanitize_text_field($_POST[$day . '_custom_text']) : '';
+
+            update_option('holiday_hours_' . $day . '_open', $open_time);
+            update_option('holiday_hours_' . $day . '_close', $close_time);
+            update_option('holiday_hours_' . $day . '_closed', $is_closed);
+            update_option('holiday_hours_' . $day . '_custom_text', $custom_text);
+        }
+
         update_option('holiday_hours_enable_test_date', $enable_test_date);
         update_option('holiday_hours_delete_on_uninstall', $delete_on_uninstall);
-        update_option('holiday_hours_saturday_closed', $saturday_closed);
-        update_option('holiday_hours_sunday_closed', $sunday_closed);
 
         echo '<div class="notice notice-success is-dismissible"><p>' .
              __('Settings saved successfully!', 'holiday-hours') .

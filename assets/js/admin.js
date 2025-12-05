@@ -141,6 +141,22 @@
         });
 
         /**
+         * Toggle day-specific hours/custom message fields
+         */
+        $('.day-closed-checkbox').on('change', function() {
+            const $row = $(this).closest('.day-hours-row');
+            const isClosed = $(this).is(':checked');
+
+            if (isClosed) {
+                $row.find('.day-hours-inputs').hide();
+                $row.find('.day-custom-message').show();
+            } else {
+                $row.find('.day-hours-inputs').show();
+                $row.find('.day-custom-message').hide();
+            }
+        });
+
+        /**
          * Save holiday from modal
          */
         $('#modal-save-btn').on('click', function() {

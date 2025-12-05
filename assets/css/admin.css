@@ -151,6 +151,66 @@
     padding: 10px 0;
 }
 
+/* Day Hours Row Styles */
+.day-hours-row {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.day-hours-row h3 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.day-hours-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.day-closed-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.day-closed-toggle input[type="checkbox"] {
+    margin: 0;
+}
+
+.day-hours-inputs {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.day-hours-inputs label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.day-custom-message {
+    display: flex;
+    flex-direction: column;
+}
+
+.day-custom-message label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 500;
+}
+
 /* Shortcode Example */
 .shortcode-example {
     display: inline-block;

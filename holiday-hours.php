@@ -81,6 +81,9 @@ class HolidayHours {
         // Check and create table on admin_init
         add_action('admin_init', array($this->database, 'check_and_create_table'));
 
+        // Run migration on admin_init
+        add_action('admin_init', array($this, 'migrate_settings'));
+
         // Initialize admin
         if (is_admin()) {
             $this->admin = new Holiday_Hours_Admin($this->database);
@@ -88,6 +91,70 @@ class HolidayHours {
 
         // Initialize shortcode
         $this->shortcode = new Holiday_Hours_Shortcode($this->database);
+    }
+
+    /**
+     * Migrate old settings to new day-specific structure
+     */
+    public function migrate_settings() {
+        // Check if migration has already been done
+        if (get_option('holiday_hours_migrated_to_day_specific', false)) {
+            return;
+        }
+
+        // Check if old settings exist
+        $old_default_open = get_option('holiday_hours_default_open');
+        $old_default_close = get_option('holiday_hours_default_close');
+
+        // If old settings exist, migrate them
+        if ($old_default_open !== false || $old_default_close !== false) {
+            $default_open = $old_default_open !== false ? $old_default_open : '6:00 AM';
+            $default_close = $old_default_close !== false ? $old_default_close : '7:00 PM';
+
+            // Get old weekend settings
+            $saturday_closed = get_option('holiday_hours_saturday_closed', false);
+            $sunday_closed = get_option('holiday_hours_sunday_closed', false);
+
+            // Apply old default hours to all days
+            $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+            foreach ($days as $day) {
+                // Set default hours for each day
+                update_option('holiday_hours_' . $day . '_open', $default_open);
+                update_option('holiday_hours_' . $day . '_close', $default_close);
+
+                // Apply weekend closed settings
+                if ($day === 'saturday' && $saturday_closed) {
+                    update_option('holiday_hours_saturday_closed', true);
+                    update_option('holiday_hours_saturday_custom_text', 'Closed');
+                } elseif ($day === 'sunday' && $sunday_closed) {
+                    update_option('holiday_hours_sunday_closed', true);
+                    update_option('holiday_hours_sunday_custom_text', 'Closed');
+                } else {
+                    update_option('holiday_hours_' . $day . '_closed', false);
+                    update_option('holiday_hours_' . $day . '_custom_text', '');
+                }
+            }
+
+            // Delete old settings
+            delete_option('holiday_hours_default_open');
+            delete_option('holiday_hours_default_close');
+            delete_option('holiday_hours_saturday_closed');
+            delete_option('holiday_hours_sunday_closed');
+        } else {
+            // No old settings exist, initialize new settings with defaults
+            $days = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
+            foreach ($days as $day) {
+                if (get_option('holiday_hours_' . $day . '_open') === false) {
+                    update_option('holiday_hours_' . $day . '_open', '6:00 AM');
+                    update_option('holiday_hours_' . $day . '_close', '7:00 PM');
+                    update_option('holiday_hours_' . $day . '_closed', false);
+                    update_option('holiday_hours_' . $day . '_custom_text', '');
+                }
+            }
+        }
+
+        // Mark migration as complete
+        update_option('holiday_hours_migrated_to_day_specific', true);
     }
 
     /**

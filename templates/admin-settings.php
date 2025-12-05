@@ -44,72 +44,66 @@ if (!defined('ABSPATH')) {
                 <!-- Default Hours Section -->
                 <div class="card">
                     <h2><?php _e('Default Operating Hours', 'holiday-hours'); ?></h2>
-                    <p class="description"><?php _e('These hours will be displayed when there are no holiday schedules active.', 'holiday-hours'); ?></p>
+                    <p class="description"><?php _e('Set your regular operating hours for each day of the week. These hours will be displayed when there are no holiday schedules active.', 'holiday-hours'); ?></p>
 
-                    <table class="form-table">
-                        <tr>
-                            <th scope="row">
-                                <label for="default_open"><?php _e('Default Open Time', 'holiday-hours'); ?></label>
-                            </th>
-                            <td>
-                                <input type="text"
-                                       id="default_open"
-                                       name="default_open"
-                                       value="<?php echo esc_attr($default_open); ?>"
-                                       class="regular-text"
-                                       placeholder="e.g., 6:00 AM">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="default_close"><?php _e('Default Close Time', 'holiday-hours'); ?></label>
-                            </th>
-                            <td>
-                                <input type="text"
-                                       id="default_close"
-                                       name="default_close"
-                                       value="<?php echo esc_attr($default_close); ?>"
-                                       class="regular-text"
-                                       placeholder="e.g., 7:00 PM">
-                            </td>
-                        </tr>
-                    </table>
+                    <?php
+                    $days_display = array(
+                        'monday' => __('Monday', 'holiday-hours'),
+                        'tuesday' => __('Tuesday', 'holiday-hours'),
+                        'wednesday' => __('Wednesday', 'holiday-hours'),
+                        'thursday' => __('Thursday', 'holiday-hours'),
+                        'friday' => __('Friday', 'holiday-hours'),
+                        'saturday' => __('Saturday', 'holiday-hours'),
+                        'sunday' => __('Sunday', 'holiday-hours')
+                    );
 
-                    <h3><?php _e('Weekend Hours', 'holiday-hours'); ?></h3>
-                    <p class="description"><?php _e('Configure whether your business is closed on weekends. If checked, the business will show as closed on these days.', 'holiday-hours'); ?></p>
-
-                    <table class="form-table">
-                        <tr>
-                            <th scope="row">
-                                <label for="saturday_closed"><?php _e('Saturday', 'holiday-hours'); ?></label>
-                            </th>
-                            <td>
-                                <label>
+                    foreach ($days_display as $day_key => $day_label):
+                        $day_data = $day_settings[$day_key];
+                    ?>
+                        <div class="day-hours-row" data-day="<?php echo esc_attr($day_key); ?>">
+                            <h3><?php echo esc_html($day_label); ?></h3>
+                            <div class="day-hours-controls">
+                                <label class="day-closed-toggle">
                                     <input type="checkbox"
-                                           id="saturday_closed"
-                                           name="saturday_closed"
+                                           name="<?php echo esc_attr($day_key); ?>_closed"
+                                           class="day-closed-checkbox"
                                            value="1"
-                                           <?php checked(get_option('holiday_hours_saturday_closed', false), true); ?>>
-                                    <?php _e('Closed on Saturdays', 'holiday-hours'); ?>
+                                           <?php checked($day_data['closed'], true); ?>>
+                                    <?php _e('Closed', 'holiday-hours'); ?>
                                 </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="sunday_closed"><?php _e('Sunday', 'holiday-hours'); ?></label>
-                            </th>
-                            <td>
-                                <label>
-                                    <input type="checkbox"
-                                           id="sunday_closed"
-                                           name="sunday_closed"
-                                           value="1"
-                                           <?php checked(get_option('holiday_hours_sunday_closed', false), true); ?>>
-                                    <?php _e('Closed on Sundays', 'holiday-hours'); ?>
-                                </label>
-                            </td>
-                        </tr>
-                    </table>
+
+                                <div class="day-hours-inputs" style="<?php echo $day_data['closed'] ? 'display:none;' : ''; ?>">
+                                    <label>
+                                        <?php _e('Open:', 'holiday-hours'); ?>
+                                        <input type="text"
+                                               name="<?php echo esc_attr($day_key); ?>_open"
+                                               value="<?php echo esc_attr($day_data['open']); ?>"
+                                               class="time-input"
+                                               placeholder="e.g., 6:00 AM">
+                                    </label>
+                                    <label>
+                                        <?php _e('Close:', 'holiday-hours'); ?>
+                                        <input type="text"
+                                               name="<?php echo esc_attr($day_key); ?>_close"
+                                               value="<?php echo esc_attr($day_data['close']); ?>"
+                                               class="time-input"
+                                               placeholder="e.g., 7:00 PM">
+                                    </label>
+                                </div>
+
+                                <div class="day-custom-message" style="<?php echo !$day_data['closed'] ? 'display:none;' : ''; ?>">
+                                    <label>
+                                        <?php _e('Custom Message:', 'holiday-hours'); ?>
+                                        <input type="text"
+                                               name="<?php echo esc_attr($day_key); ?>_custom_text"
+                                               value="<?php echo esc_attr($day_data['custom_text']); ?>"
+                                               class="regular-text"
+                                               placeholder="e.g., Closed on <?php echo esc_attr($day_label); ?>s">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
 
                 <!-- Shortcode Information -->
