@@ -8,15 +8,17 @@ Holiday Hours allows you to manage your business operating hours during holidays
 
 ## Features
 
-- **Default Operating Hours**: Set default business hours that display when no holiday schedule is active
-- **Holiday Schedules**: Create custom schedules for specific dates or date ranges
+- **Day-Specific Operating Hours**: Set unique default hours for each day of the week (Monday-Sunday)
+- **Flexible Day Settings**: Each day can be configured as:
+  - Open with specific hours (e.g., "9:00 AM - 5:00 PM")
+  - Closed with custom message (e.g., "Closed on Sundays")
+- **Holiday Schedules**: Create custom schedules for specific dates or date ranges that override default hours
 - **Year Management**: Easily switch between years and manage schedules for multiple years
-- **Flexible Status Options**:
-  - Open with custom hours
-  - Closed with custom message
+- **Priority-Based Display**: Holiday schedules take precedence over default day-specific hours
 - **Test Date Mode**: Test how your schedules will display on specific dates
 - **Easy Display**: Use the `[holiday_hours]` shortcode to display current hours anywhere on your site
 - **Clean Uninstall**: Optional data deletion when uninstalling the plugin
+- **Automatic Migration**: Seamlessly upgrades from single default hours to day-specific settings
 
 ## Installation
 
@@ -28,14 +30,24 @@ Holiday Hours allows you to manage your business operating hours during holidays
 
 ### Admin Configuration
 
+#### Setting Default Operating Hours
+
 1. Navigate to **Holiday Hours** in the WordPress admin menu
-2. Set your default operating hours
-3. Select a year from the dropdown to manage schedules
-4. Click **Add Holiday Schedule** to create a new schedule:
+2. Configure hours for each day of the week:
+   - **For Open Days**: Enter opening and closing times (e.g., "9:00 AM" and "5:00 PM")
+   - **For Closed Days**: Check the "Closed" checkbox and enter a custom message (e.g., "Closed on Sundays")
+3. Click **Save Settings**
+
+#### Managing Holiday Schedules
+
+1. Select a year from the dropdown
+2. Click **Add Holiday Schedule** to create a special schedule:
    - Choose a date range (or single date)
    - Select status: Open with custom hours or Closed with custom message
    - Enter the appropriate hours or message
    - Save the schedule
+
+**Note**: Holiday schedules override default day-specific hours. For example, if you're normally closed on Sundays but open for a special event, create a holiday schedule for that Sunday.
 
 ### Shortcode Usage
 
@@ -56,18 +68,51 @@ Display hours for a specific date:
 For theme developers, you can access holiday hours programmatically:
 
 ```php
+// Get current hours (checks today's day of week and any active holiday schedules)
 $hours = get_holiday_hours();
-// Returns array: ['status' => 'open', 'open_time' => '6:00 AM', 'close_time' => '7:00 PM']
+// Returns array:
+// ['status' => 'open', 'open_time' => '9:00 AM', 'close_time' => '5:00 PM']
+// or
+// ['status' => 'closed', 'custom_text' => 'Closed on Sundays']
 
 // Get hours for specific date
 $hours = get_holiday_hours('2025-12-25');
+
+// Display example
+if ($hours['status'] === 'open') {
+    echo 'Open today: ' . $hours['open_time'] . ' - ' . $hours['close_time'];
+} else {
+    echo $hours['custom_text'];
+}
 ```
 
 ## Settings
 
 ### Default Operating Hours
-- **Default Open Time**: The normal opening time for your business
-- **Default Close Time**: The normal closing time for your business
+
+Configure individual settings for each day of the week (Monday through Sunday):
+
+- **Day Hours**: Set unique opening and closing times for each day
+- **Closed Days**: Mark specific days as closed and provide a custom message
+- **Examples**:
+  - Monday-Friday: 9:00 AM - 5:00 PM
+  - Saturday: 10:00 AM - 2:00 PM
+  - Sunday: Closed with message "Closed on Sundays"
+
+### How Hours Are Determined
+
+The plugin uses the following priority order:
+
+1. **Holiday Schedules** (Highest Priority)
+   - If a holiday schedule exists for the date, it overrides everything
+
+2. **Day-Specific Default Hours** (Fallback)
+   - If no holiday schedule, uses the default hours configured for that day of the week
+
+**Example Scenarios**:
+- Regular Monday with no holiday → Shows Monday's default hours
+- December 25 with "Closed for Christmas" schedule → Shows holiday message
+- Sunday normally closed, but special event scheduled → Shows holiday schedule hours
 
 ### Test Date Mode
 - Enable test date mode to preview how schedules will display on specific dates
@@ -115,11 +160,12 @@ The plugin creates a custom table `wp_holiday_hours` to store holiday schedules 
 
 ## Version
 
-**Current Version**: 1.0.0
+**Current Version**: 1.1.0
 
 ## Author
 
-**Vince**
+**Aspire Web Pty Ltd**
+Website: [https://aspireweb.com.au/](https://aspireweb.com.au/)
 
 ## License
 
@@ -130,6 +176,14 @@ This plugin is licensed under the GPL v2 or later.
 For bug reports, feature requests, or questions, please create an issue in the repository.
 
 ## Changelog
+
+### 1.1.0
+- **NEW**: Day-specific operating hours (Monday-Sunday)
+- **NEW**: Individual open/close settings for each day of the week
+- **NEW**: Custom closed messages for specific days
+- **IMPROVED**: Automatic migration from single default hours to day-specific settings
+- **IMPROVED**: Enhanced admin interface with day-by-day configuration
+- **CHANGED**: Removed global weekend settings in favor of individual day control
 
 ### 1.0.0
 - Initial release

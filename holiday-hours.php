@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Holiday Hours
  * Description: Manage holiday hours with custom schedules and display current operating hours
- * Version: 1.0.0
- * Author: Vince
- * Author URI: https://example.com
+ * Version: 1.1.0
+ * Author: Aspire Web Pty Ltd
+ * Author URI: https://aspireweb.com.au/
  * License: GPL v2 or later
  * Text Domain: holiday-hours
  */
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('HOLIDAY_HOURS_VERSION', '1.0.0');
+define('HOLIDAY_HOURS_VERSION', '1.1.0');
 define('HOLIDAY_HOURS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HOLIDAY_HOURS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
