@@ -17,6 +17,7 @@ Holiday Hours allows you to manage your business operating hours during holidays
 - **Priority-Based Display**: Holiday schedules take precedence over default day-specific hours
 - **Test Date Mode**: Test how your schedules will display on specific dates
 - **Easy Display**: Use the `[holiday_hours]` shortcode to display current hours anywhere on your site
+- **Weekly Schedule Display**: Use the `[open_times]` shortcode to display a table of all default operating hours for the week
 - **Clean Uninstall**: Optional data deletion when uninstalling the plugin
 - **Automatic Migration**: Seamlessly upgrades from single default hours to day-specific settings
 
@@ -51,6 +52,8 @@ Holiday Hours allows you to manage your business operating hours during holidays
 
 ### Shortcode Usage
 
+#### Display Current Hours
+
 Display current hours on any page, post, or widget:
 
 ```
@@ -62,6 +65,35 @@ Display hours for a specific date:
 ```
 [holiday_hours date="2025-12-25"]
 ```
+
+#### Display Weekly Operating Hours
+
+Display a table showing all default operating hours for the week:
+
+```
+[open_times]
+```
+
+This will display a table with all seven days of the week (Mon-Sun) and their corresponding operating hours from your default settings. Days marked as closed will show "Closed" or your custom closed message.
+
+Example output:
+```
+Mon: 6:00 AM - 5:00 PM
+Tue: 6:00 AM - 5:00 PM
+Wed: 6:00 AM - 5:00 PM
+Thu: 6:00 AM - 5:00 PM
+Fri: 6:00 AM - 5:00 PM
+Sat: 9:00 AM - 2:00 PM
+Sun: Closed
+```
+
+You can also add a custom CSS class to the table:
+
+```
+[open_times class="my-custom-class"]
+```
+
+The table has the CSS class `open-times-table` and each row contains `day-label` and `day-hours` classes for styling.
 
 ### Developer Functions
 
@@ -160,7 +192,7 @@ The plugin creates a custom table `wp_holiday_hours` to store holiday schedules 
 
 ## Version
 
-**Current Version**: 1.1.0
+**Current Version**: 1.2.0
 
 ## Author
 
@@ -176,6 +208,12 @@ This plugin is licensed under the GPL v2 or later.
 For bug reports, feature requests, or questions, please create an issue in the repository.
 
 ## Changelog
+
+### 1.2.0
+- **NEW**: `[open_times]` shortcode to display a table of all weekly operating hours
+- **NEW**: Abbreviated day labels (Mon, Tue, Wed, etc.) in the weekly schedule display
+- **NEW**: Custom CSS class support for the open times table
+- **IMPROVED**: Enhanced documentation with shortcode usage examples
 
 ### 1.1.0
 - **NEW**: Day-specific operating hours (Monday-Sunday)

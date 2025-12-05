@@ -23,6 +23,7 @@ class Holiday_Hours_Shortcode {
         $this->database = $database;
 
         add_shortcode('holiday_hours', array($this, 'render_shortcode'));
+        add_shortcode('open_times', array($this, 'render_open_times'));
     }
 
     /**
@@ -116,6 +117,60 @@ class Holiday_Hours_Shortcode {
             echo '<span class="hours">' . esc_html($hours['open_time']) . ' - ' . esc_html($hours['close_time']) . '</span>';
             echo '</div>';
         }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * Render open times table shortcode
+     */
+    public function render_open_times($atts) {
+        $atts = shortcode_atts(array(
+            'class' => ''
+        ), $atts);
+
+        $days = array(
+            'monday' => 'Mon',
+            'tuesday' => 'Tue',
+            'wednesday' => 'Wed',
+            'thursday' => 'Thu',
+            'friday' => 'Fri',
+            'saturday' => 'Sat',
+            'sunday' => 'Sun'
+        );
+
+        ob_start();
+
+        $table_class = 'open-times-table';
+        if (!empty($atts['class'])) {
+            $table_class .= ' ' . esc_attr($atts['class']);
+        }
+
+        echo '<table class="' . $table_class . '">';
+        echo '<tbody>';
+
+        foreach ($days as $day_key => $day_label) {
+            $day_open = get_option('holiday_hours_' . $day_key . '_open', '6:00 AM');
+            $day_close = get_option('holiday_hours_' . $day_key . '_close', '7:00 PM');
+            $day_closed = get_option('holiday_hours_' . $day_key . '_closed', false);
+            $day_custom_text = get_option('holiday_hours_' . $day_key . '_custom_text', '');
+
+            echo '<tr>';
+            echo '<td class="day-label"><strong>' . esc_html($day_label) . '</strong></td>';
+            echo '<td class="day-hours">';
+
+            if ($day_closed) {
+                echo esc_html(!empty($day_custom_text) ? $day_custom_text : 'Closed');
+            } else {
+                echo esc_html($day_open . ' - ' . $day_close);
+            }
+
+            echo '</td>';
+            echo '</tr>';
+        }
+
+        echo '</tbody>';
+        echo '</table>';
 
         return ob_get_clean();
     }

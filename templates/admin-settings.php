@@ -109,12 +109,23 @@ if (!defined('ABSPATH')) {
                 <!-- Shortcode Information -->
                 <div class="card">
                     <h2><?php _e('How to Use', 'holiday-hours'); ?></h2>
-                    <p><?php _e('Use the following shortcode to display current hours on your site:', 'holiday-hours'); ?></p>
+
+                    <h3><?php _e('Display Current Hours', 'holiday-hours'); ?></h3>
+                    <p><?php _e('Use this shortcode to display the current operating hours:', 'holiday-hours'); ?></p>
                     <code class="shortcode-example">[holiday_hours]</code>
 
-                    <h3><?php _e('Optional Parameters:', 'holiday-hours'); ?></h3>
+                    <p><?php _e('Optional parameter:', 'holiday-hours'); ?></p>
                     <ul>
-                        <li><code>[holiday_hours date="2025-12-25"]</code> - Display hours for a specific date</li>
+                        <li><code>[holiday_hours date="2025-12-25"]</code> - <?php _e('Display hours for a specific date', 'holiday-hours'); ?></li>
+                    </ul>
+
+                    <h3><?php _e('Display Weekly Operating Hours', 'holiday-hours'); ?></h3>
+                    <p><?php _e('Use this shortcode to display a table of all default operating hours for the week:', 'holiday-hours'); ?></p>
+                    <code class="shortcode-example">[open_times]</code>
+
+                    <p><?php _e('Optional parameter:', 'holiday-hours'); ?></p>
+                    <ul>
+                        <li><code>[open_times class="my-custom-class"]</code> - <?php _e('Add a custom CSS class to the table', 'holiday-hours'); ?></li>
                     </ul>
                 </div>
 
