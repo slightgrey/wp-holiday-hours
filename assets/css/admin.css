@@ -8,17 +8,21 @@
 
 .holiday-hours-layout {
     display: grid;
-    grid-template-columns: 520px 1fr;
+    grid-template-columns: 620px 1fr;
     gap: 20px;
     margin-top: 20px;
 }
 
 .holiday-hours-left {
-    max-width: 520px;
+    max-width: 620px;
 }
 
 .holiday-hours-right {
     flex: 1;
+}
+
+.card {
+    max-width: 620px;
 }
 
 .holiday-hours-container .card {

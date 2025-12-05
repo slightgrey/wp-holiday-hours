@@ -112,6 +112,18 @@ if (!defined('ABSPATH')) {
                     </table>
                 </div>
 
+                <!-- Shortcode Information -->
+                <div class="card">
+                    <h2><?php _e('How to Use', 'holiday-hours'); ?></h2>
+                    <p><?php _e('Use the following shortcode to display current hours on your site:', 'holiday-hours'); ?></p>
+                    <code class="shortcode-example">[holiday_hours]</code>
+
+                    <h3><?php _e('Optional Parameters:', 'holiday-hours'); ?></h3>
+                    <ul>
+                        <li><code>[holiday_hours date="2025-12-25"]</code> - Display hours for a specific date</li>
+                    </ul>
+                </div>
+
                 <!-- Test Date Section -->
                 <div class="card">
                     <h2><?php _e('Test Date Mode', 'holiday-hours'); ?></h2>
@@ -162,17 +174,6 @@ if (!defined('ABSPATH')) {
                     </table>
                 </div>
 
-                <!-- Shortcode Information -->
-                <div class="card">
-                    <h2><?php _e('How to Use', 'holiday-hours'); ?></h2>
-                    <p><?php _e('Use the following shortcode to display current hours on your site:', 'holiday-hours'); ?></p>
-                    <code class="shortcode-example">[holiday_hours]</code>
-
-                    <h3><?php _e('Optional Parameters:', 'holiday-hours'); ?></h3>
-                    <ul>
-                        <li><code>[holiday_hours date="2025-12-25"]</code> - Display hours for a specific date</li>
-                    </ul>
-                </div>
 
                 <?php submit_button(__('Save Settings', 'holiday-hours'), 'primary', 'holiday_hours_save'); ?>
             </form>
